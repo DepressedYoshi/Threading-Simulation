@@ -1,31 +1,34 @@
-public class Customer extends Thread{
+public class Customer extends Thread {
     private static int nextId = 0;
-    private int id;
-    private long shopTime; // how long in ms is the customner shopping 
-    private long enterTime; // when did the cutomer entoer the store
-    
+    private final int id;
+    private final long shopTime;
+    private final long enterTime;
+    private final long checkoutTime;
+
     public Customer() {
         this.id = nextId++;
-        shopTime = (int)(2000 + Math.random() * 15000);
-        enterTime = System.currentTimeMillis();
+        this.shopTime = (int) (2000 + Math.random() * 15_000);
+        this.enterTime = System.currentTimeMillis();
+        this.checkoutTime = (int) (2000 + Math.random() * 3000);
     }
 
+    public long getCheckoutTime() {
+        return checkoutTime;
+    }
 
     @Override
     public String toString() {
-        return "Customer: " + id + " (enterTime=" + enterTime % 100_000 + " shoptime = " + shopTime + " ) ";
+        return "Customer: " + id + " (enterTime=" + enterTime % 100_000 + ", shopTime=" + shopTime + ")";
     }
 
-
-    /*
-     * this method will contnually run in it's own thread
-     */
     @Override
     public void run() {
-        while (enterTime + shopTime > System.currentTimeMillis()) {
-            //they are stuck in the store right now 
+        try {
+            Thread.sleep(shopTime); // Simulate shopping
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         Main.addToQ(this);
-        System.out.println(this.toString() + " enters que at " + System.currentTimeMillis());
+        System.out.println(this + " enters queue at " + System.currentTimeMillis());
     }
 }

@@ -1,23 +1,31 @@
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 
 public class Main {
-    private static PriorityQueue<Customer> queue;
-    private static long simTime = 20_000;
-    private static long startTime;
+    private static LinkedList<Customer> queue;
+    private static final Object queueLock = new Object();
+    private static long simTime = 30_000;
 
     public static void main(String[] args) {
-        queue = new PriorityQueue<>();
-        startTime = System.currentTimeMillis();
+        queue = new LinkedList<>();
 
-        CustomerFactory customerFactory = new CustomerFactory();
+        CustomerFactory customerFactory = new CustomerFactory(simTime, queue, queueLock);
+        Cashier cashier = new Cashier(queue, queueLock);
+
         customerFactory.start();
+        cashier.start();
 
-        while (startTime + simTime > System.currentTimeMillis()) {
-            customerFactory.interrupt();
+        try {
+            customerFactory.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        
     }
 
-    public static void addToQ(Customer customer){
-        queue.add(customer);
+    public static void addToQ(Customer customer) {
+        synchronized (queueLock) {
+            queue.add(customer);
+            queueLock.notify(); // Notify the cashier that a customer is added
+        }
     }
 }
