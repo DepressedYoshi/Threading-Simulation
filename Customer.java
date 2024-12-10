@@ -18,13 +18,13 @@ public class Customer extends Thread {
 
     @Override
     public String toString() {
-        return "Customer: " + id + " (enterTime=" + enterTime % 100_000 + ", shopTime=" + shopTime + ")";
+        return "Customer" + id + ": (enterTime=" + enterTime % 100_000 + ", shopTime=" + shopTime + ")";
     }
 
     @Override
     public void run() {
         try {
-            Thread.sleep(shopTime); // Simulate shopping
+            Thread.sleep(shopTime); 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
