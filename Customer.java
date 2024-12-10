@@ -4,6 +4,9 @@ public class Customer extends Thread {
     private final long shopTime;
     private final long enterTime;
     private final long checkoutTime;
+    private long enterQueTime;
+    private long startCTime;
+    private long leaveTime;
 
     public Customer() {
         this.id = nextId++;
@@ -14,6 +17,14 @@ public class Customer extends Thread {
 
     public long getCheckoutTime() {
         return checkoutTime;
+    }
+
+    public long getWaitTime(){
+        return startCTime - enterQueTime;
+    }
+
+    public void setLeaveTime(long leaveTime) {
+        this.leaveTime = leaveTime;
     }
 
     @Override
@@ -29,6 +40,7 @@ public class Customer extends Thread {
             e.printStackTrace();
         }
         Main.addToQ(this);
-        System.out.println(this + " enters queue at " + System.currentTimeMillis());
+        this.enterQueTime = System.currentTimeMillis();
+        System.out.println(this + " enters que at " + enterQueTime);
     }
 }
