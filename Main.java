@@ -79,15 +79,11 @@ public class Main {
             for (Customer customer : list) {
                 sum += customer.getSubtotal();
             }
-            return sum;
+            return Math.round(sum * 100.0) / 100.0;
         }
         private static double getProfit(ArrayList<Customer> list){
-            double sum = 0;
-            double profitMargin = Items.getProfit();
-            for (Customer customer : list) {
-                sum += customer.getSubtotal();
-            }
-            return sum * profitMargin;
+            double sum = getReveue(list) * Items.getProfit();
+            return Math.round(sum * 100.0) / 100.0;
         }
 
     

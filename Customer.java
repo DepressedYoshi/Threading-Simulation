@@ -1,4 +1,3 @@
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class Customer extends Thread {
@@ -19,7 +18,7 @@ public class Customer extends Thread {
     private final long checkoutTime;
     private long enterQueTime;
     private long startCTime;
-    private long leaveTime;
+    private String leaveTime;
     private String name;
     private String race;
     private final String[] names = {
@@ -79,7 +78,7 @@ public class Customer extends Thread {
         for (Items items : shoppingList) {
             sum += items.getPrice() * items.getQ();
         }
-        return sum;
+        return Math.round(sum * 100.0) / 100.0;
     }
 
     public long getCheckoutTime() {
@@ -92,7 +91,7 @@ public class Customer extends Thread {
     public String getEnterTime(){
         return this.enterTime;
     }
-    public void setLeaveTime(long leaveTime) {
+    public void setLeaveTime(String leaveTime) {
         this.leaveTime = leaveTime;
     }
     public long getShopTime() {
@@ -101,25 +100,21 @@ public class Customer extends Thread {
     public void setStartCTime(long startCTime) {
         this.startCTime = startCTime;
     }
+    public String getLeaveTime() {
+        return leaveTime;
+    }
 
     public String printSummary(){        
-        /*
-         * Customer-0 Information:
-         * Name: 
-         *      - if karen - chekc for chekc out time 
-         * Race: 
-         *      - if black - check for profit 
-         * Shoptime:
-         * Waittime:
-         * Enter Time:
-         * Leave Tiem: 
-         * 
-        */
-        return this + " information: \n" + "Name: " + name + 
+        String basicInfo = " information: \n" + "Name: " + name + 
                         "\nRaces: " + race +
-                        "\nShopTime: " +  TimeUtil.beautifyMili(shopTime) + 
+                        "\nEntered at: " +  getEnterTime() + 
+                        "\nLeft at: " +  getLeaveTime() + 
+                        "\nShopTime: " +  TimeUtil.beautifyMili(this.shopTime) + 
                         "\nWaitime: " + TimeUtil.beautifyMili(this.getWaitTime()) + 
-                        "\nItems Purchased: " + shoppingList.toString() + "\n";
+                        "\nCheckout Time: " + TimeUtil.beautifyMili(this.getCheckoutTime()) +
+                        "\nItems Purchased: " + shoppingList.toString() + 
+                        "\nSubtotal: " + getSubtotal() + "\n";
+        return this + basicInfo;
     }
     @Override
     public String toString() {
