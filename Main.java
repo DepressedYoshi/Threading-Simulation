@@ -49,59 +49,42 @@ public class Main {
             }
         }
 
-        private static long calculateShopTime(ArrayList<Customer> list){
-            long sum = 0;
-            for (Customer customer : list) {
-                sum += customer.getShopTime();
-            }
-
-            return sum / customerFactory.getCustomerCount();
-        }
-
-        private static long calculateCOutTime(ArrayList<Customer> list){
-            long sum = 0;
-            for (Customer customer : list) {
-                sum += customer.getCheckoutTime();
-            }
-
-            return sum / customerFactory.getCustomerCount();
-        }
-        private static long calculateWaitTime(ArrayList<Customer> list){
-            long sum = 0;
-            for (Customer customer : list) {
-                sum += customer.getWaitTime();
-            }
-
-            return sum / customerFactory.getCustomerCount();
-        }
-        private static double getReveue(ArrayList<Customer> list){
-            double sum = 0;
-            for (Customer customer : list) {
-                sum += customer.getSubtotal();
-            }
-            return Math.round(sum * 100.0) / 100.0;
-        }
-        private static double getProfit(ArrayList<Customer> list){
-            double sum = getReveue(list) * Items.getProfit();
-            return Math.round(sum * 100.0) / 100.0;
-        }
-
-    
 
         public static void printStat(ArrayList<Customer> finalist){
             System.out.println("--------------------------------------------STAT--------------------------------------------");
-            System.out.println("=========Overview=========");
-            System.out.println("There were " + lanes +" lnes of Cashiers");
-            System.out.println("Total Number of Customer Entered: " + customerFactory.getCustomerCount());
-            System.out.println("Time Store Stayed Opened: " + TimeUtil.beautifyMili(simTime));
-            System.out.println("Average Shopping Time: " + TimeUtil.beautifyMili(calculateShopTime(finalist)));
-            System.out.println("Average Waiting Time: " + TimeUtil.beautifyMili(calculateWaitTime(finalist)));
-            System.out.println("Average Checkout Time: " + TimeUtil.beautifyMili(calculateCOutTime(finalist)));
-            System.out.println("Total Reveunue: $" + getReveue(finalist));
-            System.out.println("Total Profit: $" + getProfit(finalist));
-            System.out.println("=========Customer Activity Log========="); 
+            System.out.println("==========================================Overview==========================================");
+        
+            int customerCount = customerFactory.getCustomerCount();
+            long totalShopTime = 0, totalWaitTime = 0, totalCheckoutTime = 0;
+            double totalRevenue = 0;
+        
+            for (Customer customer : finalist) {
+                totalShopTime += customer.getShopTime();
+                totalWaitTime += customer.getWaitTime();
+                totalCheckoutTime += customer.getCheckoutTime();
+                totalRevenue += customer.getSubtotal();
+            }
+        
+            double profit = totalRevenue * Items.getProfit();
+            String avgShopTime = TimeUtil.beautifyMili(totalShopTime / customerCount);
+            String avgWaitTime = TimeUtil.beautifyMili(totalWaitTime / customerCount);
+            String avgCheckoutTime = TimeUtil.beautifyMili(totalCheckoutTime / customerCount);
+        
+            StringBuilder statReport = new StringBuilder();
+            statReport.append("There were ").append(lanes).append(" Cashiers\n")
+                      .append("Total Number of Customers Entered: ").append(customerCount).append("\n")
+                      .append("Time Store Stayed Open: ").append(TimeUtil.beautifyMili(simTime)).append("\n")
+                      .append("Average Shopping Time: ").append(avgShopTime).append("\n")
+                      .append("Average Waiting Time: ").append(avgWaitTime).append("\n")
+                      .append("Average Checkout Time: ").append(avgCheckoutTime).append("\n")
+                      .append("Total Revenue: $").append(String.format("%.2f", totalRevenue)).append("\n")
+                      .append("Total Profit: $").append(String.format("%.2f", profit)).append("\n")
+                      .append("====================================Customer Activity Log=====================================\n");
+        
+            System.out.println(statReport);
             printEachCustomerStat(finalist);
-    }
+        }
+        
 
    
 }

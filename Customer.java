@@ -15,35 +15,46 @@ public class Customer extends Thread {
     private final int id;
     private final long shopTime;
     private final String enterTime;
-    private final long checkoutTime;
+    private long checkoutTime;
     private long enterQueTime;
     private long startCTime;
     private String leaveTime;
     private String name;
     private String race;
     private final String[] names = {
-        "Karen", "Marha", "Lucas", "Carmen", "Josh", 
-        "Aisha", "Wei", "Hiroshi", "Fatima", "Carlos", 
-        "Amara", "Raj", "Liam", "Chen", "Sofia", 
-        "Miguel", "Alejandra", "Kwame", "Dae", "Zara", 
-        "Emily", "James", "Michael", "Jessica", "Robert"
-    };
+            "Karen", "Marha", "Lucas", "Carmen", "Josh", 
+            "Aisha", "Wei", "Hiroshi", "Fatima", "Carlos", 
+            "Amara", "Raj", "Liam", "Chen", "Sofia", 
+            "Miguel", "Alejandra", "Kwame", "Dae", "Zara", 
+            "Emily", "James", "Michael", "Jessica", "Robert"
+        };
     private String[] races = {"White", "Asian", "Mexican", "Black", "Other"} ;
     private ArrayList<Items> shoppingList;
+    private boolean isKaren;
     
+        
     public Customer() {
         this.shoppingList = genShoppingList();
         this.id = nextId++;
         this.shopTime = getShopTime(shoppingList);
         this.enterTime = TimeUtil.getCurrentTime();
-        this.checkoutTime = getCheckoutTime(shoppingList);
         this.name = genName();
+        this.isKaren = name.equals("Karen");
+        this.checkoutTime = getCheckoutTime(shoppingList);
+            if (isKaren) {
+            this.checkoutTime += 30_000;
+        }
         this.race = genRace();
     }
+    
 
-    private String genName(){
-        return names[(int)(Math.random()*20)];
+    private String genName() {
+        if (Math.random() < 0.2) {
+            return "Karen";
+        }
+        return names[(int)(Math.random() * names.length)];
     }
+    
     private String genRace(){
         return races[(int)(Math.random()*5)];
     }
@@ -105,16 +116,22 @@ public class Customer extends Thread {
     }
 
     public String printSummary(){        
-        String basicInfo = " information: \n" + "Name: " + name + 
-                        "\nRaces: " + race +
-                        "\nEntered at: " +  getEnterTime() + 
-                        "\nLeft at: " +  getLeaveTime() + 
-                        "\nShopTime: " +  TimeUtil.beautifyMili(this.shopTime) + 
-                        "\nWaitime: " + TimeUtil.beautifyMili(this.getWaitTime()) + 
-                        "\nCheckout Time: " + TimeUtil.beautifyMili(this.getCheckoutTime()) +
-                        "\nItems Purchased: " + shoppingList.toString() + 
-                        "\nSubtotal: " + getSubtotal() + "\n";
-        return this + basicInfo;
+        StringBuilder summary = new StringBuilder();
+        summary.append(" information: \n")
+           .append("Name: ").append(name)
+           .append("Race: ").append(race).append("\n")
+           .append("Entered at: ").append(getEnterTime()).append("\n")
+           .append("Left at: ").append(getLeaveTime()).append("\n")
+           .append("Shop Time: ").append(TimeUtil.beautifyMili(this.shopTime)).append("\n")
+           .append("Wait Time: ").append(TimeUtil.beautifyMili(this.getWaitTime())).append("\n")
+           .append("Checkout Time: ").append(TimeUtil.beautifyMili(this.getCheckoutTime())).append("\n")
+           .append("Items Purchased: ").append(shoppingList.toString()).append("\n")
+           .append("Subtotal: ").append(getSubtotal()).append("\n");
+        if (isKaren) {
+            summary.append("NOTE: This Karen does not like the fact her cashier is Mexican, she started a fight that delayed checkout by 30s\n");
+        }
+
+        return this + summary.toString();
     }
     @Override
     public String toString() {
