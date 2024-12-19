@@ -117,9 +117,8 @@ public class Customer extends Thread {
 
     public String printSummary(){        
         StringBuilder summary = new StringBuilder();
-        summary.append(" information: \n")
-           .append("Name: ").append(name)
-           .append("Race: ").append(race).append("\n")
+        summary.append("Name: ").append(name)
+           .append("\nRace: ").append(race).append("\n")
            .append("Entered at: ").append(getEnterTime()).append("\n")
            .append("Left at: ").append(getLeaveTime()).append("\n")
            .append("Shop Time: ").append(TimeUtil.beautifyMili(this.shopTime)).append("\n")
